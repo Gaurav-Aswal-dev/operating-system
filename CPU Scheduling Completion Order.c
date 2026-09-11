@@ -26,7 +26,7 @@ int main(){
         printf("%s",id[i]);
     }
     printf("\n");
-    //========roundrobin=======
+    //=======RoundRobin=======
     int queue[100];
     int front = 0,rear =0;
     int i =0;
