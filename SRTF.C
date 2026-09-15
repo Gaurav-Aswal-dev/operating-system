@@ -1,54 +1,101 @@
-#include<stdio.h>
-#include<limits.h>
-int main(){
+#include <stdio.h>
+
+int main()
+{
     int n;
-    printf("number of n");
-    scanf("%d",&n);
-    int at[n],bt[n],rt[n];
-    int ct[n],tat[n],wt[n];
-    for(int i=0;i<n;i++){
-        printf("enter arrival time and burst time for p%d",i+1);
-        scanf("%d %d",&at[i],&bt[i]);
-        rt[i] = bt[i];
+    int burst[10], arrival[10], remaining[10];
+    int waiting[10], turnaround[10];
+
+    int completed = 0;
+    int time = 0;
+    int i, shortest;
+
+    float avgWT = 0, avgTAT = 0;
+
+    printf("Number of processes: ");
+    scanf("%d", &n);
+
+    printf("Enter Burst Time:\n");
+    for(i = 0; i < n; i++)
+    {
+        printf("P%d: ", i);
+        scanf("%d", &burst[i]);
+
+        remaining[i] = burst[i];
     }
-    int completed  = 0;
-    int time  = 0;
-    while(completed<n){
-        int shortest = -1;
-        int minRT = INT_MAX;
-        for(int i=0;i<n;i++){
-            if(at[i]<=time && rt[i]>0){
-                    if(rt[i]<minRT){
-                    minRT = rt[i];
+
+    printf("Enter Arrival Time:\n");
+    for(i = 0; i < n; i++)
+    {
+        printf("P%d: ", i);
+        scanf("%d", &arrival[i]);
+    }
+
+    printf("\nGantt Chart:\n");
+
+    while(completed < n)
+    {
+        shortest = -1;
+
+        // Find process with shortest remaining time
+        for(i = 0; i < n; i++)
+        {
+            if(arrival[i] <= time && remaining[i] > 0)
+            {
+                if(shortest == -1 ||
+                   remaining[i] < remaining[shortest])
+                {
                     shortest = i;
                 }
             }
         }
-        if(shortest ==-1){
+
+        // No process has arrived yet
+        if(shortest == -1)
+        {
             time++;
             continue;
         }
-        rt[shortest--];
+
+        printf("P%d ", shortest);
+
+        // Run process for 1 unit
+        remaining[shortest]--;
         time++;
-        if(rt[shortest]==0){
+
+        // Process completed
+        if(remaining[shortest] == 0)
+        {
             completed++;
-            ct[shortest] = time;
-            tat[shortest] = ct[shortest]-at[shortest];
-            wt[shortest] = tat[shortest]-bt[shortest];
+
+            turnaround[shortest] =
+                time - arrival[shortest];
+
+            waiting[shortest] =
+                turnaround[shortest] - burst[shortest];
         }
     }
-     printf("\nPID\tAT\tBT\tCT\tTAT\tWT\n");
 
-    for (int i = 0; i < n; i++) {
-        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
-               i + 1,
-               at[i],
-               bt[i],
-               ct[i],
-               tat[i],
-               wt[i]);
+    printf("\n\nProcess\tArrival\tBurst\tWaiting\tTurnaround\n");
+
+    for(i = 0; i < n; i++)
+    {
+        printf("P%d\t%d\t%d\t%d\t%d\n",
+               i,
+               arrival[i],
+               burst[i],
+               waiting[i],
+               turnaround[i]);
+
+        avgWT += waiting[i];
+        avgTAT += turnaround[i];
     }
 
+    avgWT = avgWT / n;
+    avgTAT = avgTAT / n;
+
+    printf("\nAverage Waiting Time = %.2f", avgWT);
+    printf("\nAverage Turnaround Time = %.2f\n", avgTAT);
+
     return 0;
-  
 }
