@@ -35,8 +35,8 @@ int main()
         }
         
         if(shortest == -1) { time++; continue; }
-        
-        printf("P%d ", shortest);
+
+        printf("p%d\t",shortest);
         remaining[shortest]--;
         time++;
         

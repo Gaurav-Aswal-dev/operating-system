@@ -1,66 +1,52 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <semaphore.h>
+
 #include <unistd.h>
 
-#define SIZE 5              // Buffer ki size
+#define SIZE 5
 
-int buffer[SIZE];           // Buffer (5 items rakh sakte hain)
-int in = 0, out = 0;        // Producer daalta hai 'in' pe, Consumer nikaalta hai 'out' se
+int buffer[SIZE];
 
-sem_t empty;                // Kitni jagah khaali hai
-sem_t full;                 // Kitne items bhare hue hain
-pthread_mutex_t lock;       // Lock (ek time par ek hi thread)
+int in = 0, out = 0;
 
-// 🟢 PRODUCER FUNCTION
+sem_t empty;               
+sem_t full;                
+pthread_mutex_t lock;      
 void* producer(void* arg) {
     for (int i = 1; i <= 5; i++) {
-        sem_wait(&empty);           // 1. Khaali jagah check karo
-        pthread_mutex_lock(&lock);   // 2. Lock lagao
-
-        buffer[in] = i;              // 3. Item daalo
+        sem_wait(&empty); 
+        pthread_mutex_lock(&lock);
+        buffer[in] = i; 
         printf("Producer: item %d daala index %d pe\n", i, in);
-        in = (in + 1) % SIZE;        // 4. in ko aage badhao (circular)
-
-        pthread_mutex_unlock(&lock); // 5. Lock kholo
-        sem_post(&full);             // 6. Full signal do (1 item badha)
-
-        sleep(1);                    // 1 second ruko
+        in = (in + 1) % SIZE;
+        pthread_mutex_unlock(&lock);
+        sem_post(&full);
+        sleep(1);                   
     }
     return NULL;
 }
-
-// 🔴 CONSUMER FUNCTION
 void* consumer(void* arg) {
     for (int i = 1; i <= 5; i++) {
-        sem_wait(&full);             // 1. Item check karo
-        pthread_mutex_lock(&lock);   // 2. Lock lagao
-
-        int item = buffer[out];      // 3. Item nikalo
+        sem_wait(&full);            
+        pthread_mutex_lock(&lock);   
+        int item = buffer[out];      
         printf("Consumer: item %d nikala index %d se\n", item, out);
-        out = (out + 1) % SIZE;      // 4. out ko aage badhao (circular)
-
-        pthread_mutex_unlock(&lock); // 5. Lock kholo
-        sem_post(&empty);            // 6. Empty signal do (1 jagah khaali)
-
-        sleep(2);                    // 2 second ruko
+        out = (out + 1) % SIZE;      
+        pthread_mutex_unlock(&lock); 
+        sem_post(&empty);            
+        sleep(2);                  
     }
     return NULL;
 }
-
 int main() {
     pthread_t p, c;                  
-
     sem_init(&empty, 0, SIZE);       
     sem_init(&full, 0, 0);           
     pthread_mutex_init(&lock, NULL); 
-    
-
     pthread_create(&p, NULL, producer, NULL);  
     pthread_create(&c, NULL, consumer, NULL);  
-
     pthread_join(p, NULL);           
     pthread_join(c, NULL);           
-
     return 0;
 }

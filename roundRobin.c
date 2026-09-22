@@ -1,12 +1,8 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
     int n, tq;
-    int at[10], bt[10], rt[10];
-    int wt[10], tat[10];
-
-    int time = 0;
-    int completed = 0;
 
     printf("Enter number of processes: ");
     scanf("%d", &n);
@@ -14,64 +10,87 @@ int main() {
     printf("Enter Time Quantum: ");
     scanf("%d", &tq);
 
-    for (int i = 0; i < n; i++) {
-        printf("\nProcess P%d\n", i + 1);   // ← i+1 se P1, P2, P3
+    int at[20], bt[20], rt[20];
+    int ct[20], tat[20], wt[20];
 
-        printf("Arrival Time: ");
+    // Input
+    for (int i = 0; i < n; i++)
+    {
+        printf("P%d Arrival Time: ", i + 1);
         scanf("%d", &at[i]);
 
-        printf("Burst Time: ");
+        printf("P%d Burst Time: ", i + 1);
         scanf("%d", &bt[i]);
 
-        rt[i] = bt[i];
+        rt[i] = bt[i];   // Shuru mein poora bacha hai
     }
 
-    printf("\nExecution Order: ");
+    int time = 0, done = 0;
+    int ganttPid[200], ganttTime[200], g = 0;
 
-    while (completed < n) {
+    // Round Robin Logic
+    while (done < n)
+    {
         int found = 0;
 
-        for (int i = 0; i < n; i++) {
-            if (at[i] <= time && rt[i] > 0) {
+        for (int i = 0; i < n; i++)
+        {
+            if (at[i] <= time && rt[i] > 0)
+            {
                 found = 1;
 
-                if (rt[i] > tq) {
-                    printf("P%d ", i + 1);   // ← i+1 se print
-                    time = time + tq;
-                    rt[i] = rt[i] - tq;
+                ganttPid[g] = i + 1;
+                ganttTime[g] = time;
+                g++;
+
+                if (rt[i] > tq)
+                {
+                    time += tq;
+                    rt[i] -= tq;
                 }
-                else {
-                    printf("P%d ", i + 1);   // ← i+1 se print
-                    time = time + rt[i];
+                else
+                {
+                    time += rt[i];
                     rt[i] = 0;
+                    done++;
 
-                    completed++;
-
-                    tat[i] = time - at[i];
+                    ct[i] = time;
+                    tat[i] = ct[i] - at[i];
                     wt[i] = tat[i] - bt[i];
                 }
             }
         }
 
-        if (found == 0) {
+        if (found == 0)
             time++;
-        }
     }
 
-    printf("\n\nProcess\tAT\tBT\tWT\tTAT\n");
-
+    // Output Table
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
     float totalWT = 0, totalTAT = 0;
 
-    for (int i = 0; i < n; i++) {
-        printf("P%d\t%d\t%d\t%d\t%d\n",
-               i + 1, at[i], bt[i], wt[i], tat[i]);   // ← i+1
+    for (int i = 0; i < n; i++)
+    {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
+               i + 1, at[i], bt[i], ct[i], tat[i], wt[i]);
 
         totalWT += wt[i];
         totalTAT += tat[i];
     }
 
-    printf("\nAverage Waiting Time = %.2f", totalWT / n);
-    printf("\nAverage Turnaround Time = %.2f\n", totalTAT / n);
+    printf("\nAvg WT  = %.2f\n", totalWT / n);
+    printf("Avg TAT = %.2f\n", totalTAT / n);
+
+    // Gantt Chart
+    printf("\nGantt Chart:\n|");
+    for (int i = 0; i < g; i++)
+        printf("  P%d  |", ganttPid[i]);
+    printf("\n");
+
+    printf("%d", ganttTime[0]);
+    for (int i = 1; i < g; i++)
+        printf("     %d", ganttTime[i]);
+    printf("     %d\n", time);
 
     return 0;
 }

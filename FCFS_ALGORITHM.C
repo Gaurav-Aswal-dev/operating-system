@@ -8,14 +8,14 @@ int main() {
     printf("Number of processes : ");
     scanf("%d", &n);
 
-    printf("Burst time : ");
+    printf("Burst time : "); 
     for (i = 0; i < n; i++)
         scanf("%d", &bt[i]);
 
     printf("Arrival time : ");
     for (i = 0; i < n; i++)
         scanf("%d", &at[i]);
-
+ 
     ct[0] = at[0] + bt[0];
     for (i = 1; i < n; i++) {
         if (at[i] > ct[i - 1])

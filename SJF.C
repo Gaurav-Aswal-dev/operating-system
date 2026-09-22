@@ -3,83 +3,83 @@
 int main()
 {
     int n;
-
-    printf("Number of processes : ");
+    printf("Enter number of processes: ");
     scanf("%d", &n);
 
-    int pid[10], bt[10], at[10], wt[10], tat[10], ct[10];
+    int pid[20], at[20], bt[20], ct[20], tat[20], wt[20];
+    int done[20] = {0};
+    int time = 0, complete = 0;
     float avg_wt = 0, avg_tat = 0;
 
-    // ---- Burst Time input ----
-    printf("Burst time : ");
+    int ganttPid[50];      // Kaunsi process chali
+    int ganttTime[50];     // Kab se shuru hui
+    int g = 0;             // Gantt counter
+
+    // Input
     for (int i = 0; i < n; i++)
     {
-        pid[i] = i;
+        pid[i] = i + 1;
+        printf("P%d Arrival Time: ", i + 1);
+        scanf("%d", &at[i]);
+        printf("P%d Burst Time: ", i + 1);
         scanf("%d", &bt[i]);
     }
 
-    // ---- Arrival Time input ----
-    printf("Arrival time : ");
-    for (int i = 0; i < n; i++)
-        scanf("%d", &at[i]);
-
-    // ---- Sort by Burst Time (tera wala) ----
-    for (int i = 0; i < n - 1; i++)
+    // SJF Logic
+    while (complete < n)
     {
-        for (int j = i + 1; j < n; j++)
+        int idx = -1, min_bt = 9999;
+
+        for (int i = 0; i < n; i++)
         {
-            if (bt[i] > bt[j])
+            if (done[i] == 0 && at[i] <= time && bt[i] < min_bt)
             {
-                int temp = bt[i]; 
-                bt[i] = bt[j]; 
-                bt[j] = temp;
-
-                temp = pid[i];  
-                pid[i] = pid[j]; 
-                pid[j] = temp;
-
-                temp = at[i]; 
-                at[i] = at[j]; 
-                at[j] = temp;
+                min_bt = bt[i];
+                idx = i;
             }
         }
+
+        if (idx == -1)
+        {
+            time++;
+            continue;
+        }
+
+        ganttPid[g] = pid[idx];
+        ganttTime[g] = time;
+        g++;
+
+        // Process chalao
+        time += bt[idx];
+        ct[idx] = time;
+        tat[idx] = ct[idx] - at[idx];
+        wt[idx] = tat[idx] - bt[idx];
+
+        done[idx] = 1;
+        complete++;
     }
 
-    // ---- WT aur TAT (tera wala) ----
-    wt[0] = 0;
-    for (int i = 1; i < n; i++)
-        wt[i] = wt[i - 1] + bt[i - 1];
+    printf("\nGantt Chart:\n|");
+    for (int i = 0; i < g; i++)
+        printf("  P%d  |", ganttPid[i]);
+    printf("\n");
 
+    for (int i = 0; i < g; i++)
+        printf("%d     ", ganttTime[i]);
+    printf("%d\n", time);
+
+    // Output Table
+    printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
     for (int i = 0; i < n; i++)
     {
-        tat[i] = wt[i] + bt[i];
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n",
+               pid[i], at[i], bt[i], ct[i], tat[i], wt[i]);
         avg_wt += wt[i];
         avg_tat += tat[i];
     }
 
-    // ---- Table ----
-    printf("\nProcess\tBT\tWT\tTAT\n");
-    for (int i = 0; i < n; i++)
-        printf("P%d\t%d\t%d\t%d\n", pid[i], bt[i], wt[i], tat[i]);
-
-    // ---- Gantt Chart ----
-    printf("\nGantt Chart : ");
-    for (int i = 0; i < n; i++)
-        printf("P%d ", pid[i]);
-    printf("\n");
-
-    printf("0");
-    int time = 0;
-    for (int i = 0; i < n; i++)
-    {
-        time = time + bt[i];
-        printf("    %d", time);
-    }
-    printf("\n");
-
-    // ---- Average ----
-    printf("\nAverage waiting time: %.2f\n", avg_wt / n);
-    printf("Average turnaround time : %.2f\n", avg_tat / n);
+    printf("\nAvg WT  = %.2f\n", avg_wt / n);
+    printf("Avg TAT = %.2f\n", avg_tat / n);
 
     return 0;
 }
