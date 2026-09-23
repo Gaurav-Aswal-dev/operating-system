@@ -25,11 +25,11 @@ int main()
         rt[i] = bt[i];   // Shuru mein poora bacha hai
     }
 
-    int time = 0, done = 0;
+    int time = 0, completed = 0;
     int ganttPid[200], ganttTime[200], g = 0;
 
     // Round Robin Logic
-    while (done < n)
+    while (completed < n)
     {
         int found = 0;
 
@@ -52,7 +52,7 @@ int main()
                 {
                     time += rt[i];
                     rt[i] = 0;
-                    done++;
+                    completed++;
 
                     ct[i] = time;
                     tat[i] = ct[i] - at[i];
