@@ -7,8 +7,6 @@ int main() {
 
     int time = 0;
     int completed = 0;
-
-    // ✅ Gantt chart ke liye
     int ganttPid[200];
     int ganttStart[200];
     int ganttEnd[200];
@@ -50,8 +48,6 @@ int main() {
             time++;
             continue;
         }
-
-        // ✅ Gantt chart mein save karo
         ganttPid[g] = selected + 1;
         ganttStart[g] = time;
 
@@ -68,8 +64,6 @@ int main() {
             wt[selected] = tat[selected] - bt[selected];
         }
     }
-
-    // ✅ Output Table
     printf("\n\nProcess\tAT\tBT\tPriority\tWT\tTAT\n");
 
     float totalWT = 0;
@@ -90,8 +84,6 @@ int main() {
 
     printf("\nAverage Waiting Time = %.2f", totalWT / n);
     printf("\nAverage Turnaround Time = %.2f\n", totalTAT / n);
-
-    // ✅ Gantt Chart Print
     printf("\nGantt Chart:\n|");
     for (int i = 0; i < g; i++)
         printf("  P%d  |", ganttPid[i]);
