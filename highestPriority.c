@@ -32,8 +32,6 @@ int main() {
     while (completed < n) {
         int selected = -1;
         int highest = 999;
-
-        // Available processes mein se highest priority wali dhoondo
         for (int i = 0; i < n; i++) {
             if (at[i] <= time && remaining[i] > 0) {
                 if (priority[i] < highest) {
@@ -43,7 +41,6 @@ int main() {
             }
         }
 
-        // Agar koi process available nahi
         if (selected == -1) {
             time++;
             continue;
@@ -56,8 +53,6 @@ int main() {
 
         ganttEnd[g] = time;
         g++;
-
-        // Agar process khatam ho gayi
         if (remaining[selected] == 0) {
             completed++;
             tat[selected] = time - at[selected];
