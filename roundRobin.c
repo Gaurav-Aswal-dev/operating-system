@@ -13,7 +13,6 @@ int main()
     int at[20], bt[20], rt[20];
     int ct[20], tat[20], wt[20];
 
-    // Input
     for (int i = 0; i < n; i++)
     {
         printf("P%d Arrival Time: ", i + 1);
@@ -27,8 +26,6 @@ int main()
 
     int time = 0, completed = 0;
     int ganttPid[200], ganttTime[200], g = 0;
-
-    // Round Robin Logic
     while (completed < n)
     {
         int found = 0;
@@ -64,8 +61,6 @@ int main()
         if (found == 0)
             time++;
     }
-
-    // Output Table
     printf("\nProcess\tAT\tBT\tCT\tTAT\tWT\n");
     float totalWT = 0, totalTAT = 0;
 
