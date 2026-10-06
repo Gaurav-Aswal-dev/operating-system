@@ -11,11 +11,9 @@ int main()
     int time = 0, complete = 0;
     float avg_wt = 0, avg_tat = 0;
 
-    int ganttPid[50];      // Kaunsi process chali
-    int ganttTime[50];     // Kab se shuru hui
-    int g = 0;             // Gantt counter
-
-    // Input
+    int ganttPid[50];     
+    int ganttTime[50];     
+    int g = 0;            
     for (int i = 0; i < n; i++)
     {
         pid[i] = i + 1;
@@ -24,8 +22,6 @@ int main()
         printf("P%d Burst Time: ", i + 1);
         scanf("%d", &bt[i]);
     }
-
-    // SJF Logic
     while (complete < n)
     {
         int idx = -1, min_bt = 9999;
@@ -48,8 +44,6 @@ int main()
         ganttPid[g] = pid[idx];
         ganttTime[g] = time;
         g++;
-
-        // Process chalao
         time += bt[idx];
         ct[idx] = time;
         tat[idx] = ct[idx] - at[idx];
