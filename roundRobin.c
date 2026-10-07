@@ -21,9 +21,8 @@ int main()
         printf("P%d Burst Time: ", i + 1);
         scanf("%d", &bt[i]);
 
-        rt[i] = bt[i];   // Shuru mein poora bacha hai
+        rt[i] = bt[i];  
     }
-
     int time = 0, completed = 0;
     int ganttPid[200], ganttTime[200], g = 0;
     while (completed < n)
