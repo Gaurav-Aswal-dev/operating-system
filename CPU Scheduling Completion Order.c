@@ -17,6 +17,7 @@ int main(){
     }
      printf("\nQuantum: ");
     scanf("%d", &quant);
+    
     //===========FCFS==========
     int time =0;
     for(int i=0;i<n;i++){
@@ -26,6 +27,7 @@ int main(){
         printf("%s",id[i]);
     }
     printf("\n");
+
     //=======RoundRobin=======
     int queue[100];
     int front = 0,rear =0;
@@ -35,7 +37,6 @@ int main(){
         queue[rear++] = i;
         i++;
     }
-    
     printf("RR%d Completion Order: ", quant);
     while(front<rear){
         int idx = queue[front++];
