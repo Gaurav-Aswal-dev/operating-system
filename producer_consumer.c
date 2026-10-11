@@ -12,7 +12,8 @@ int in = 0, out = 0;
 
 sem_t empty;               
 sem_t full;                
-pthread_mutex_t lock;      
+pthread_mutex_t lock;   
+//producer   
 void* producer(void* arg) {
     for (int i = 1; i <= 5; i++) {
         sem_wait(&empty); 
@@ -26,6 +27,7 @@ void* producer(void* arg) {
     }
     return NULL;
 }
+// consumer
 void* consumer(void* arg) {
     for (int i = 1; i <= 5; i++) {
         sem_wait(&full);            
