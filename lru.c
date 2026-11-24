@@ -1,57 +1,52 @@
-
 #include <stdio.h>
-
-int main()
-{
+int main() {
     int pages[] = {1, 2, 3, 1, 4, 5};
     int frames[3] = {-1, -1, -1};
     int time[3] = {0, 0, 0};
-
-    int n = 6, i, j, faults = 0, count = 0;
-    int found, pos, min;
-
-    for(i = 0; i < n; i++)
-    {
-        found = 0;
-
-        for(j = 0; j < 3; j++)
-        {
-            if(frames[j] == pages[i])
-            {
+    int n = 6, faults = 0;
+    printf("Ref\tFrames\t\tStatus\n-------------------------\n");
+    for (int i = 0; i < n; i++) {
+        int found = 0;
+        // 1. Check for HIT
+        for (int j = 0; j < 3; j++) {
+            if (frames[j] == pages[i]) {
                 found = 1;
-                time[j] = i;
+                time[j] = i; // Recent use time update karo
                 break;
             }
         }
-
-        if(found == 0)
-        {
-            if(count < 3)
-            {
-                pos = count++;
+        // 2. Handle FAULT
+        if (found == 0) {
+            int pos = -1;
+            // Pehle khali frame dhundo
+            for (int j = 0; j < 3; j++) {
+                if (frames[j] == -1) {
+                    pos = j;
+                    break;
+                }
             }
-            else
-            {
-                min = time[0];
+            // Agar khali frame nahi hai, toh LRU (sabse purana) dhundo
+            if (pos == -1) {
                 pos = 0;
-
-                for(j = 1; j < 3; j++)
-                {
-                    if(time[j] < min)
-                    {
-                        min = time[j];
+                for (int j = 1; j < 3; j++) {
+                    if (time[j] < time[pos]) {
                         pos = j;
                     }
                 }
             }
-
             frames[pos] = pages[i];
             time[pos] = i;
             faults++;
         }
+        // 3. Print current state
+        printf("%d\t", pages[i]);
+        for (int j = 0; j < 3; j++) {
+            if (frames[j] == -1) printf("- ");
+            else printf("%d ", frames[j]);
+        }
+        printf("\t\t%s\n", found ? "HIT" : "FAULT");
     }
 
-    printf("Total Page Faults = %d", faults);
-
+    printf("\nTotal Page Faults = %d\n", faults);
     return 0;
 }
